@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Clock } from "lucide-react";
 
 const vibes = [
   { emoji: "🌷", label: "Calm" },
@@ -15,9 +16,10 @@ const vibes = [
 
 interface Props {
   onNext: (vibe: string) => void;
+  onHistory: () => void;
 }
 
-const VibeCheckIn = ({ onNext }: Props) => {
+const VibeCheckIn = ({ onNext, onHistory }: Props) => {
   const [selected, setSelected] = useState<string | null>(null);
   const [customVibe, setCustomVibe] = useState("");
 
@@ -25,6 +27,22 @@ const VibeCheckIn = ({ onNext }: Props) => {
 
   return (
     <div className="animate-fade-slide-in flex flex-col min-h-screen px-6 pt-12 pb-28">
+      {/* History button */}
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={onHistory}
+          className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105"
+          style={{
+            background: "hsl(var(--muted))",
+            color: "hsl(var(--muted-foreground))",
+            border: "1.5px solid hsl(var(--primary) / 0.2)",
+          }}
+        >
+          <Clock className="w-4 h-4" />
+          History
+        </button>
+      </div>
+
       <h1 className="font-display text-3xl font-bold text-center text-foreground tracking-tight">
         Vibe Tracker
       </h1>
