@@ -2,8 +2,10 @@ import { useState, useRef } from "react";
 import VibeCheckIn from "@/components/VibeCheckIn";
 import Reflection from "@/components/Reflection";
 import Confirmation from "@/components/Confirmation";
+import VibeHistory from "@/components/VibeHistory";
+import { saveVibeEntry } from "@/types/vibe";
 
-type Screen = "checkin" | "reflection" | "confirmation";
+type Screen = "checkin" | "reflection" | "confirmation" | "history";
 
 const Index = () => {
   const [screen, setScreen] = useState<Screen>("checkin");
@@ -24,12 +26,25 @@ const Index = () => {
   };
 
   const handleReflectionComplete = (reflections: string[]) => {
-    console.log("Vibe:", selectedVibe, "Reflections:", reflections);
+    saveVibeEntry({
+      id: crypto.randomUUID(),
+      vibe: selectedVibe,
+      reflections,
+      timestamp: new Date().toISOString(),
+    });
     transition("confirmation");
   };
 
   const handleDone = () => {
     setSelectedVibe("");
+    transition("checkin");
+  };
+
+  const handleHistory = () => {
+    transition("history");
+  };
+
+  const handleBackFromHistory = () => {
     transition("checkin");
   };
 
@@ -40,9 +55,10 @@ const Index = () => {
           transitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
         }`}
       >
-        {screen === "checkin" && <VibeCheckIn onNext={handleVibeSelected} />}
+        {screen === "checkin" && <VibeCheckIn onNext={handleVibeSelected} onHistory={handleHistory} />}
         {screen === "reflection" && <Reflection onComplete={handleReflectionComplete} />}
-        {screen === "confirmation" && <Confirmation onDone={handleDone} />}
+        {screen === "confirmation" && <Confirmation onDone={handleDone} onHistory={handleHistory} />}
+        {screen === "history" && <VibeHistory onBack={handleBackFromHistory} />}
       </div>
     </div>
   );
